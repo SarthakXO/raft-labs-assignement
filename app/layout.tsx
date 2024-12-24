@@ -28,7 +28,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ApolloProvider client={client}>{children}</ApolloProvider>
+        {/* <ApolloProvider client={client}> */}
+          {children}
+
+        {/* </ApolloProvider> */}
       </body>
     </html>
   );
