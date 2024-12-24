@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ApolloProvider } from "@apollo/client";
 import client from "./../lib/apolloClient";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  weight: ["300"],
   subsets: ["latin"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -25,12 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${poppins.variable} font-sans`}>
         {/* <ApolloProvider client={client}> */}
-          {children}
-
+        {children}
         {/* </ApolloProvider> */}
       </body>
     </html>
