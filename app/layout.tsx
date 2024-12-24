@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ApolloProvider } from "@apollo/client";
 import client from "./../lib/apolloClient";
-
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 const poppins = Poppins({
   weight: ["300"],
   subsets: ["latin"],
@@ -22,11 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <UserProvider>
+
       <body className={`${poppins.variable} font-sans`}>
         {/* <ApolloProvider client={client}> */}
         {children}
         {/* </ApolloProvider> */}
       </body>
+      </UserProvider>
     </html>
   );
 }

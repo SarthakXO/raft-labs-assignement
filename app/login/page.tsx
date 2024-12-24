@@ -1,10 +1,12 @@
-import LoginBox from '@/components/LoginBox'
+// import LoginBox from '@/components/LoginBox'
 import React from 'react'
 
+
 const page = () => {
+
   return (
     <div>
-        <LoginBox/>
+        {/* <LoginBox/> */}
     </div>
   )
 }
