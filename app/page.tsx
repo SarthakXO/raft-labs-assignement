@@ -1,19 +1,30 @@
 "use client";
 import React, { useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 const Home = () => {
   const { user, error, isLoading } = useUser();
-  const router=useRouter()
+  const router = useRouter();
+
+  const redirectToApp = () => {
+    if (user) {
+      router.push("/authenticated");
+    }
+  };
   useEffect(() => {
-    // if(user){
-    //   router.push('/authenticated')
-    // }
-    console.log(user)
-  }, [user])
-  
+    redirectToApp();
+    // console.log(user);
+  }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <div className="text-xl font-semibold">Loading.....</div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-black text-white font-sans flex flex-col justify-center items-center p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col sm:flex-row gap-8 sm:gap-16 items-start sm:items-start w-full max-w-4xl mx-auto">
@@ -66,7 +77,7 @@ const Home = () => {
               </svg>
             </a>
 
-            {/* <a
+            <a
               className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto"
               href="api/auth/logout"
             >
@@ -86,7 +97,7 @@ const Home = () => {
                   d="M5 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
-            </a> */}
+            </a>
           </div>
         </div>
 
