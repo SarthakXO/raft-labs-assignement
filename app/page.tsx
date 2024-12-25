@@ -1,12 +1,63 @@
 "use client";
 import React, { useEffect } from "react";
 import Image from "next/image";
-
+import { useQuery, useLazyQuery, gql } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+
+const getApolloDataTest = gql`
+  query Posts {
+    usersCollection {
+      edges {
+        node {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
 const Home = () => {
-  const { user, error, isLoading } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
+  const [triggerQuery, { loading, error, data }] =
+    useLazyQuery(getApolloDataTest);
+
+  const handleQueryFetch = () => {
+    console.log("1: ", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    console.log("2: ", process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY);
+    try {
+      triggerQuery();
+      console.log("loading...: ", loading);
+
+      console.log("data from apollo: ", data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  
+  // const fetchTestGraphql = async () => {
+  //   const response = await axios.post(
+  //     "https://mwuhrawmjsuvlybbirbt.supabase.co/graphql/v1",
+  //     {
+  //       query:
+  //         "query FetchFirst2Users { usersCollection(first : 2) { edges { node { id username email } } } }",
+  //     },
+  //     {
+  //       headers: {
+  //         apiKey:
+  //           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13dWhyYXdtanN1dmx5YmJpcmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUxNTg1NDAsImV4cCI6MjA1MDczNDU0MH0.qVB3SuS77Dq46T98yS3THeoBLUnEmQfH87DcPePbFr4",
+  //         Authorization:
+  //           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13dWhyYXdtanN1dmx5YmJpcmJ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNTE1ODU0MCwiZXhwIjoyMDUwNzM0NTQwfQ.0FU39EtGW3cnxR7fDu_Wxfcd4W4deovOpYcVuDnrhKM",
+  //       },
+  //     }
+  //   );
+
+  //   console.log(response.data);
+  // };
 
   const redirectToApp = () => {
     if (user) {
@@ -77,9 +128,9 @@ const Home = () => {
               </svg>
             </a>
 
-            <a
+            <div
               className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto"
-              href="api/auth/logout"
+              onClick={handleQueryFetch}
             >
               <span>Logout</span>
               <svg
@@ -97,7 +148,7 @@ const Home = () => {
                   d="M5 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
-            </a>
+            </div>
           </div>
         </div>
 
