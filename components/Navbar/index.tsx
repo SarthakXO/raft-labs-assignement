@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     console.log(`user: `, user);
     const handleClickOutside = (e: MouseEvent) => {
-      // Check if the click is outside of the sidebar or dropdown
+      
       if (
         sidebarRef.current &&
         !sidebarRef.current.contains(e.target as Node)
