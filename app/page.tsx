@@ -1,16 +1,61 @@
 "use client";
 import React, { useEffect } from "react";
 import Image from "next/image";
-
+import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
+
+const CHECK_FOR_USER = gql`
+  query Users {
+    usersCollection(filter: { email: { eq: $email } }) {
+      edges {
+        node {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+const ADD_USER = gql`
+  mutation Users {
+    insertIntousersCollection(objects: $newUser) {
+      affectedCount
+    }
+  }
+`;
 const Home = () => {
-  const { user, error, isLoading } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
+
+  const [checkUserInDB, { data }] = useLazyQuery(CHECK_FOR_USER, {
+    variables: { email: user?.email },
+  });
+  const [mutateFn, { loading, error }] = useMutation(ADD_USER, {
+    variables: {
+      newUser: [
+        {
+          auth0id: user?.sid,
+          username: user?.nickname,
+          email: user?.email,
+          profilepicture: user?.picture,
+        },
+      ],
+    },
+  });
+
+  const handleAddingUser = async () => {
+    await checkUserInDB();
+    if (data?.usersCollection?.edges?.length < 1) {
+      mutateFn();
+    }
+    router.push("/authenticated");
+  };
 
   const redirectToApp = () => {
     if (user) {
-      router.push("/authenticated");
+      handleAddingUser();
     }
   };
   useEffect(() => {
@@ -20,7 +65,7 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         <div className="text-xl font-semibold">Loading.....</div>
       </div>
     );
@@ -77,10 +122,7 @@ const Home = () => {
               </svg>
             </a>
 
-            <a
-              className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto"
-              href="api/auth/logout"
-            >
+            <div className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto">
               <span>Logout</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +139,7 @@ const Home = () => {
                   d="M5 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
-            </a>
+            </div>
           </div>
         </div>
 
