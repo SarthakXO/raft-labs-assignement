@@ -1,14 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useMutation } from "@apollo/client";
+import { useMutation, gql } from "@apollo/client";
+
+const CREATE_NEW_POST = gql`
+  mutation createPost {
+    insertIntopostsCollection(objects: $newPost) {
+      affectedCount
+    }
+  }
+`;
+
+
 const TweetInput = () => {
+  const inputRef = useRef(null);
   const [tweetText, setTweetText] = useState("");
+  const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST, {
+    variables: {
+      newPost: [
+        {
+          userid: localStorage.getItem("userId"),
+          content: tweetText,
+          images: "",
+        },
+      ],
+    },
+  });
   const maxLength = 280;
-  const { user, isLoading, error } = useUser();
+  const { user } = useUser();
   const handleChange = (event) => {
     setTweetText(event.target.value);
+  };
+
+  const createPost = () => {
+    addPost();
+    inputRef.current.value = "";
   };
 
   return (
@@ -27,11 +54,12 @@ const TweetInput = () => {
           />
         )}
         <span className="text-md text-gray-600 dark:text-gray-300 hover:underline cursor-pointer">
-          @username
+          @{user?.nickname}
         </span>
       </div>
       <hr className="my-2 bg-gray-600 border-0 h-px mx-auto w-[97%]" />
       <textarea
+        ref={inputRef}
         className="w-full h-36 p-4 text-lg border rounded-2xl resize-none outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 transition-all"
         value={tweetText}
         onChange={handleChange}
@@ -56,6 +84,7 @@ const TweetInput = () => {
               : "bg-blue-500 hover:bg-blue-600"
           } dark:bg-blue-700 dark:hover:bg-blue-800 text-white shadow-md`}
           disabled={tweetText.length === 0 || tweetText.length > maxLength}
+          onClick={createPost}
         >
           Post!
         </button>

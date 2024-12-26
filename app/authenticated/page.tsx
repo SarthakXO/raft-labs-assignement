@@ -37,9 +37,7 @@ const page = () => {
   return (
     <div className="p-2">
       <TweetInput />
-      <div className="h-[50px] w-[100px] bg-red-500" onClick={()=>console.log(`datas: `,datas)}>
-        Click
-      </div>
+      
     </div>
   );
 };
