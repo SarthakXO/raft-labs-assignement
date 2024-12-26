@@ -36,7 +36,7 @@ const page = () => {
   }, [loading]);
 
   return (
-    <div className="p-2">
+    <div className="p-2 bg-black">
       <TweetInput />
       <HomeFeed/>
     </div>

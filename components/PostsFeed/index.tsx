@@ -35,14 +35,9 @@ const HomeFeed = () => {
   }, [data]);
 
   return (
-    <div className="home-feed bg-gray-900 min-h-screen flex flex-col items-center py-8 px-4">
+    <div className="home-feed bg-black min-h-screen flex flex-col items-center py-8 px-4">
       <h1 className="text-white text-3xl font-semibold mb-6">Home Feed</h1>
-      <div
-        className="h-[100px] w-[100px] bg-red-500"
-        onClick={() => console.log(data)}
-      >
-        CLICK ME
-      </div>
+      
       <div className="posts w-full max-w-2xl space-y-6">
         {
           posts?.map((item: any, index) => {

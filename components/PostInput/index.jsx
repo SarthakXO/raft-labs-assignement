@@ -5,52 +5,52 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useMutation, gql } from "@apollo/client";
 
 const CREATE_NEW_POST = gql`
-  mutation createPost {
+  mutation createPost($newPost: [posts_insert_input!]!) {
     insertIntopostsCollection(objects: $newPost) {
       affectedCount
     }
   }
 `;
 
-
 const TweetInput = () => {
   const inputRef = useRef(null);
   const [tweetText, setTweetText] = useState("");
-  const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST, {
-    variables: {
-      newPost: [
-        {
-          userid: localStorage.getItem("userId"),
-          content: tweetText,
-          images: "",
-        },
-      ],
-    },
-  });
+  const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST);
   const maxLength = 280;
   const { user } = useUser();
+
   const handleChange = (event) => {
     setTweetText(event.target.value);
   };
 
   const createPost = () => {
-    addPost();
-    inputRef.current.value = "";
+    if (tweetText.trim().length > 0) {
+      addPost({
+        variables: {
+          newPost: [
+            {
+              userid: localStorage.getItem("userId"),
+              content: tweetText,
+              images: "",
+            },
+          ],
+        },
+      });
+      inputRef.current.value = "";
+      setTweetText("");
+    }
   };
 
   return (
-    <div className="max-w-full w-full mx-auto p-6 sm:max-w-2xl dark:bg-gray-800 dark:text-white rounded-2xl shadow-lg">
+    <div className="max-w-full w-full mx-auto p-6 sm:max-w-2xl bg-gray-800 dark:text-white rounded-2xl shadow-xl transition-all duration-300">
       <div className="flex items-center space-x-3 mb-4">
         {user && (
           <Image
-            src={`${user?.picture}`}
+            src={user?.picture || "/default-avatar.png"}
             alt="User Avatar"
             width={40}
             height={40}
             className="rounded-full cursor-pointer"
-            onClick={() => {
-              console.log(user?.picture);
-            }}
           />
         )}
         <span className="text-md text-gray-600 dark:text-gray-300 hover:underline cursor-pointer">
@@ -66,7 +66,6 @@ const TweetInput = () => {
         placeholder="What's happening?"
         maxLength={maxLength}
       />
-
       <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
         <span
           className={`text-sm ${
@@ -87,6 +86,7 @@ const TweetInput = () => {
           onClick={createPost}
         >
           Post!
+          
         </button>
       </div>
     </div>

@@ -65,7 +65,7 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         <div className="text-xl font-semibold">Loading.....</div>
       </div>
     );
