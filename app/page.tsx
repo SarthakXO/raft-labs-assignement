@@ -26,8 +26,8 @@ const Home = () => {
     useLazyQuery(getApolloDataTest);
 
   const handleQueryFetch = () => {
-    console.log("1: ", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-    console.log("2: ", process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY);
+    // console.log("1: ", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    // console.log("2: ", process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY);
     try {
       triggerQuery();
       console.log("loading...: ", loading);
@@ -38,7 +38,6 @@ const Home = () => {
     }
   };
 
-  
   // const fetchTestGraphql = async () => {
   //   const response = await axios.post(
   //     "https://mwuhrawmjsuvlybbirbt.supabase.co/graphql/v1",
