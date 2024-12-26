@@ -4,6 +4,7 @@ import { useQuery, gql } from "@apollo/client";
 import TweetInput from "./../../components/PostInput/index";
 import { useEffect,useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import HomeFeed from "@/components/PostsFeed";
 
 
 
@@ -37,7 +38,7 @@ const page = () => {
   return (
     <div className="p-2">
       <TweetInput />
-      
+      <HomeFeed/>
     </div>
   );
 };
