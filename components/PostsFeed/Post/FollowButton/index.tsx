@@ -4,8 +4,8 @@ import { useUser } from "@auth0/nextjs-auth0/client"; // Auth0 user hook
 
 // Props interface for FollowButton component
 interface Props {
-  creatorId: String;
-  creatorName: String;
+  creatorId: string;
+  creatorName: string;
 }
 
 // GraphQL query to get the list of followed users for the viewer
@@ -50,7 +50,7 @@ const FollowButton = ({ creatorId, creatorName }: Props) => {
   const [following, setFollowing] = useState(false); // State to track if currently following
   const viewerId = localStorage.getItem("userId"); // Get viewer's user ID from localStorage
   const { user } = useUser(); // Get user info from Auth0
-  const { error, loading, data, refetch } = useQuery(GET_ALL_FOLLOWED, {
+  const {  data, refetch } = useQuery(GET_ALL_FOLLOWED, {
     variables: { viewer: viewerId }, // Query to get followed users for the current viewer
   });
 

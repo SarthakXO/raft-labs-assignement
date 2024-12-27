@@ -1,25 +1,25 @@
 "use client"; // Client-side only
 
-import React, { useEffect } from "react"; // React import
+import { useEffect } from "react"; // React import
 import Image from "next/image"; // Next.js optimized image
-import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client"; // Apollo Client hooks
+import { useMutation, gql } from "@apollo/client"; // Apollo Client hooks
 import { useUser } from "@auth0/nextjs-auth0/client"; // Auth0 user hook
 import { useRouter } from "next/navigation"; // Next.js router
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 // GraphQL query to check if user exists by email
-const CHECK_FOR_USER = gql`
-  query Users {
-    usersCollection(filter: { email: { eq: $email } }) {
-      edges {
-        node {
-          id
-          username
-        }
-      }
-    }
-  }
-`;
+// const CHECK_FOR_USER = gql`
+//   query Users {
+//     usersCollection(filter: { email: { eq: $email } }) {
+//       edges {
+//         node {
+//           id
+//           username
+//         }
+//       }
+//     }
+//   }
+// `;
 
 // GraphQL mutation to add new user
 const ADD_USER = gql`
@@ -46,12 +46,12 @@ const Home = () => {
   const router = useRouter(); // Router for page navigation
 
   // Lazy-loaded query to check if user exists
-  const [checkUserInDB, { data }] = useLazyQuery(CHECK_FOR_USER, {
-    variables: { email: user?.email },
-  });
+  // const [checkUserInDB, { data }] = useLazyQuery(CHECK_FOR_USER, {
+  //   variables: { email: user?.email },
+  // });
 
   // Mutation to insert user into DB
-  const [mutateFn, { loading, error }] = useMutation(ADD_USER, {
+  const [mutateFn, { data }] = useMutation(ADD_USER, {
     variables: {
       newUser: [
         {
@@ -80,6 +80,7 @@ const Home = () => {
       router.push("/authenticated?new=yes"); // Redirect with new user flag
     } catch (e) {
       router.push("/authenticated?new=no"); // Redirect with error flag
+      console.log(e)
     }
 
     // If no user found, insert them
@@ -114,7 +115,7 @@ const Home = () => {
       <main className="flex flex-col sm:flex-row gap-8 sm:gap-16 items-start sm:items-start w-full max-w-4xl mx-auto">
         <div className="flex flex-col sm:items-start text-center sm:text-left w-full">
           <h1 className="text-4xl sm:text-6xl font-bold text-white leading-tight">
-            Sarthak's Social Media
+            Sarthak&apos;s Social Media
           </h1>
           <p className="text-sm sm:text-base text-gray-300 mt-4 max-w-xl">
             This is a social media app built to help people connect, share

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useMutation, gql } from "@apollo/client";
@@ -15,7 +15,7 @@ const CREATE_NEW_POST = gql`
 const TweetInput = ({ setPostMade }) => {
   const inputRef = useRef(null);
   const [tweetText, setTweetText] = useState("");
-  const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST);
+  const [addPost, { }] = useMutation(CREATE_NEW_POST);
   const maxLength = 280;
   const { user } = useUser();
 
