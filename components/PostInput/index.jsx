@@ -12,7 +12,7 @@ const CREATE_NEW_POST = gql`
   }
 `;
 
-const TweetInput = () => {
+const TweetInput = ({ setPostMade }) => {
   const inputRef = useRef(null);
   const [tweetText, setTweetText] = useState("");
   const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST);
@@ -39,10 +39,11 @@ const TweetInput = () => {
       inputRef.current.value = "";
       setTweetText("");
     }
+    setPostMade(true)
   };
 
   return (
-    <div className="max-w-full w-full mx-auto p-6 sm:max-w-2xl bg-gray-800 dark:text-white rounded-2xl shadow-xl transition-all duration-300">
+    <div className="max-w-full mt-20 md:mt-5 w-full mx-auto p-6 sm:max-w-2xl bg-gray-800 dark:text-white rounded-2xl shadow-xl transition-all duration-300">
       <div className="flex items-center space-x-3 mb-4">
         {user && (
           <Image
@@ -86,7 +87,6 @@ const TweetInput = () => {
           onClick={createPost}
         >
           Post!
-          
         </button>
       </div>
     </div>

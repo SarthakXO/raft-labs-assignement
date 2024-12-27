@@ -1,10 +1,13 @@
-"use client";
-import React, { useEffect } from "react";
-import Image from "next/image";
-import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useRouter } from "next/navigation";
+"use client"; // Client-side only
 
+import React, { useEffect } from "react"; // React import
+import Image from "next/image"; // Next.js optimized image
+import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client"; // Apollo Client hooks
+import { useUser } from "@auth0/nextjs-auth0/client"; // Auth0 user hook
+import { useRouter } from "next/navigation"; // Next.js router
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+// GraphQL query to check if user exists by email
 const CHECK_FOR_USER = gql`
   query Users {
     usersCollection(filter: { email: { eq: $email } }) {
@@ -18,20 +21,36 @@ const CHECK_FOR_USER = gql`
   }
 `;
 
+// GraphQL mutation to add new user
 const ADD_USER = gql`
   mutation Users {
     insertIntousersCollection(objects: $newUser) {
+      records {
+        id
+      }
+    }
+  }
+`;
+
+// GraphQL mutation to add user to follows table
+const ADD_USER_TO_FOLLWS_TABLE = gql`
+  mutation Follows {
+    insertIntofollowsCollection(objects: $newUser) {
       affectedCount
     }
   }
 `;
-const Home = () => {
-  const { user, isLoading } = useUser();
-  const router = useRouter();
 
+const Home = () => {
+  const { user, isLoading } = useUser(); // Auth0 user data
+  const router = useRouter(); // Router for page navigation
+
+  // Lazy-loaded query to check if user exists
   const [checkUserInDB, { data }] = useLazyQuery(CHECK_FOR_USER, {
     variables: { email: user?.email },
   });
+
+  // Mutation to insert user into DB
   const [mutateFn, { loading, error }] = useMutation(ADD_USER, {
     variables: {
       newUser: [
@@ -45,39 +64,51 @@ const Home = () => {
     },
   });
 
+  // Mutation to add user to follows table
+  const [addUserToFollows, {}] = useMutation(ADD_USER_TO_FOLLWS_TABLE, {
+    variables: {
+      newUser: [{ userid: data?.insertIntousersCollection?.records?.[0]?.id }],
+    },
+  });
+
+  // Handle adding user if not in DB
   const handleAddingUser = async () => {
-    try{
-      await mutateFn()
-      router.push("/authenticated?new=yes");
-
-    }catch(e){
-      router.push("/authenticated?new=no");
-
+    console.log('here')
+    try {
+      await mutateFn(); // Add user
+      await addUserToFollows(); // Add to follows table
+      router.push("/authenticated?new=yes"); // Redirect with new user flag
+    } catch (e) {
+      router.push("/authenticated?new=no"); // Redirect with error flag
     }
-    // await checkUserInDB();
+
+    // If no user found, insert them
     if (data?.usersCollection?.edges?.length < 1) {
       mutateFn();
     }
-    router.push("/authenticated");
+    router.push("/authenticated"); // Redirect to authenticated page
   };
 
+  // Redirect user if logged in
   const redirectToApp = () => {
     if (user) {
-      handleAddingUser();
+      handleAddingUser(); // Add user and redirect
     }
   };
   useEffect(() => {
     redirectToApp();
-    // console.log(user);
-  }, [user]);
-
+  }, [user]); 
+  // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        <div className="text-xl font-semibold">Loading.....</div>
+
+        <LoadingSpinner/>
       </div>
     );
   }
+
+  // Main page UI
   return (
     <div className="min-h-screen bg-black text-white font-sans flex flex-col justify-center items-center p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col sm:flex-row gap-8 sm:gap-16 items-start sm:items-start w-full max-w-4xl mx-auto">
@@ -92,6 +123,7 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-center sm:items-start mt-8">
+            {/* GitHub source code link */}
             <a
               className="flex items-center justify-center bg-gray-800 hover:bg-gray-600 duration-300 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all w-full sm:w-auto"
               href="https://github.com/SarthakXO/raft-labs-assignement"
@@ -108,6 +140,7 @@ const Home = () => {
               View Source Code
             </a>
 
+            {/* Explore app link */}
             <a
               className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto"
               href="api/auth/login"
@@ -130,7 +163,8 @@ const Home = () => {
               </svg>
             </a>
 
-            <div className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto">
+            {/* Logout button (placeholder) */}
+            {/* <div className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto">
               <span>Logout</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -147,19 +181,9 @@ const Home = () => {
                   d="M5 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
-            </div>
+            </div> */}
           </div>
         </div>
-
-        {/* <div className="hidden sm:block w-full max-w-xs mx-auto">
-          <Image
-            src="/assets/raftlabs-logo.svg"
-            alt="RaftLabs logo"
-            width={180}
-            height={180}
-            priority
-          />
-        </div> */}
       </main>
     </div>
   );
