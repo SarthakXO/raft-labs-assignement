@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql,useMutation } from "@apollo/client";
 import TweetInput from "./../../components/PostInput/index";
 import { useEffect,useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -19,18 +19,34 @@ query getUserId{
   }
 }`
 
+const ADD_USER_TO_FOLLWS_TABLE=gql`
+mutation Follows{
+  insertIntofollowsCollection(objects:$newUser){
+    affectedCount
+  }
+}
+`
+
 const page = () => {
   const {user}=useUser()
  
   const {loading,error,data}=useQuery(GET_USER_UUID,{
     variables:{email:user?.email}
   })
+  const [addUserToFollows,{}]=useMutation(ADD_USER_TO_FOLLWS_TABLE,{
+    variables:{newUser:[{userid:data?.usersCollection?.edges?.[0]?.node?.id}]}
+  })
   const [datas,setDatas]=useState()
 
   useEffect(() => {
-    
+    // console.log('auth dataL :',data)
     if(data){
       localStorage.setItem('userId',data?.usersCollection?.edges?.[0]?.node?.id)
+      try{
+        addUserToFollows()
+      }catch(e){
+        // console.log(e)
+      }
     }
     
   }, [loading]);

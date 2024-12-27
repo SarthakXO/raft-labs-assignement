@@ -46,7 +46,15 @@ const Home = () => {
   });
 
   const handleAddingUser = async () => {
-    await checkUserInDB();
+    try{
+      await mutateFn()
+      router.push("/authenticated?new=yes");
+
+    }catch(e){
+      router.push("/authenticated?new=no");
+
+    }
+    // await checkUserInDB();
     if (data?.usersCollection?.edges?.length < 1) {
       mutateFn();
     }
