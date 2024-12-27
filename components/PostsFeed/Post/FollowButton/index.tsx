@@ -107,7 +107,7 @@ const FollowButton = ({ creatorId, creatorName }: Props) => {
           following ? "bg-blue-500" : "bg-gray-700 hover:bg-gray-600"
         } text-white ml-auto`}
         onClick={() =>
-          following && viewerId != creatorId ? unFollowCreator() : follolwCreator() // Toggle follow/unfollow
+          user?.nickname == creatorName?null:following ? unFollowCreator() : follolwCreator() // Toggle follow/unfollow
         }
       >
         {user?.nickname == creatorName ? "You" : following ? "Following" : "Follow"} {/* Button text */}
