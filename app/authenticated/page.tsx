@@ -1,5 +1,4 @@
 "use client"; // Client-side only
-
 import { useQuery, gql,  } from "@apollo/client"; // Apollo Client hooks
 import TweetInput from "./../../components/PostInput/index"; // Tweet input component
 import { useEffect, useState } from "react"; // React hooks
@@ -43,7 +42,7 @@ const Page = () => {
 
   return (
     <div className="p-2 bg-black flex-row gap-10 flex">
-      {/* <FollowersSidebar/> */}
+     
       <div className="w-[100%]">
         {/* Tweet input component */}
         <TweetInput setPostMade={setPostMade} />
