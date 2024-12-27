@@ -1,6 +1,6 @@
 "use client"; // Client-side only
 
-import React from "react"; // React import
+import React, { useEffect } from "react"; // React import
 import Image from "next/image"; // Next.js optimized image
 import { useQuery, useMutation, useLazyQuery, gql } from "@apollo/client"; // Apollo Client hooks
 import { useUser } from "@auth0/nextjs-auth0/client"; // Auth0 user hook
@@ -73,6 +73,7 @@ const Home = () => {
 
   // Handle adding user if not in DB
   const handleAddingUser = async () => {
+    console.log('here')
     try {
       await mutateFn(); // Add user
       await addUserToFollows(); // Add to follows table
@@ -94,11 +95,16 @@ const Home = () => {
       handleAddingUser(); // Add user and redirect
     }
   };
-
+  useEffect(() => {
+    redirectToApp();
+  }, [user]); 
   // Show loading state
   if (isLoading) {
     return (
-      <LoadingSpinner/>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+
+        <LoadingSpinner/>
+      </div>
     );
   }
 
@@ -158,7 +164,7 @@ const Home = () => {
             </a>
 
             {/* Logout button (placeholder) */}
-            <div className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto">
+            {/* <div className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold text-base rounded-full py-3 px-6 gap-2 transition-all duration-300 w-full sm:w-auto">
               <span>Logout</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +181,7 @@ const Home = () => {
                   d="M5 12h14m0 0l-4-4m4 4l-4 4"
                 />
               </svg>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>
