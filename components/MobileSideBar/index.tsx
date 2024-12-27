@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 interface MobileSidebarProps {
     hideSideBar: boolean;
   }
@@ -8,7 +7,7 @@ interface MobileSidebarProps {
 
 const MobileSidebar = ({hideSideBar}:MobileSidebarProps ) => {
 
-    const {user}=useUser()
+    // const {user}=useUser()
   const [open, setOpen] = useState(hideSideBar);
 
   return (

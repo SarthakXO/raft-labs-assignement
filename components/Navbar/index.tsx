@@ -36,9 +36,7 @@ const Navbar: React.FC = () => {
   }, []);
 
   // Handle the logout action
-  const handleLogout = () => {
-    router.push("/login");
-  };
+ 
 
   // Handle the profile navigation
   const handleProfile = () => {

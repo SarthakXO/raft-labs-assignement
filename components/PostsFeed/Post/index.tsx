@@ -1,10 +1,9 @@
-import React, { useState } from "react"; // React hooks
 import { useQuery, gql } from "@apollo/client"; // Apollo Client hooks
 import FollowButton from "./FollowButton"; // Follow button component
 
 // Props interface for TweetPost component
 interface Props {
-  id: string;
+ 
   userid: string;
   text: string;
 }
@@ -23,12 +22,13 @@ const GET_USER_DATA = gql`
   }
 `;
 
-const TweetPost = ({ id, userid, text }: Props) => {
-  const { loading, error, data } = useQuery(GET_USER_DATA, {
+const TweetPost = ({  userid, text }: Props) => {
+  const {  data } = useQuery(GET_USER_DATA, {
     variables: { userid: userid }, // Query to fetch user data using their userID
   });
 
   // Default profile image and text content
+  
   const profileImage =
     "https://i.pinimg.com/originals/92/0d/23/920d23d3ad50a11f64a06667f2b2e3e4.jpg";
   const username = "john_doe";
