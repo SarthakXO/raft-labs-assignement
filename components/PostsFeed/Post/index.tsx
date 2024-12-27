@@ -22,7 +22,6 @@ const GET_USER_DATA = gql`
 `;
 
 const TweetPost = ({ id, userid, text }: Props) => {
-  
   const { loading, error, data } = useQuery(GET_USER_DATA, {
     variables: { userid: userid },
   });
@@ -31,16 +30,14 @@ const TweetPost = ({ id, userid, text }: Props) => {
   const username = "john_doe";
   const content = text || "Just had the best coffee! ☕️ #coffee #goodvibes";
 
- 
-
   return (
     <div className="tweet-post bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out max-w-xl w-full mx-auto">
       <div className="user-info flex justify-between items-center mb-4">
         <div className="flex items-center space-x-4">
           <img
-            onClick={() => console.log(`userid: `, data)}
+            onClick={() => console.log(`userid: `, data?.usersCollection?.edges?.[0]?.node?.profilepicture)}
             className="profile-image w-14 h-14 rounded-full border-2 border-gray-700 hover:border-blue-500 transition-colors duration-300"
-            src={profileImage}
+            src={data?.usersCollection?.edges?.[0]?.node?.profilepicture}
             alt="Profile"
           />
           <div className="username-follow flex flex-col">
@@ -49,7 +46,7 @@ const TweetPost = ({ id, userid, text }: Props) => {
             </p>
           </div>
         </div>
-        <FollowButton  creatorId={userid}/>
+        <FollowButton creatorId={userid} creatorName={data?.usersCollection?.edges?.[0]?.node?.username} />
       </div>
 
       <div className="content">

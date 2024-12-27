@@ -21,6 +21,16 @@ const CHECK_FOR_USER = gql`
 const ADD_USER = gql`
   mutation Users {
     insertIntousersCollection(objects: $newUser) {
+      records {
+        id
+      }
+    }
+  }
+`;
+
+const ADD_USER_TO_FOLLWS_TABLE = gql`
+  mutation Follows {
+    insertIntofollowsCollection(objects: $newUser) {
       affectedCount
     }
   }
@@ -44,15 +54,19 @@ const Home = () => {
       ],
     },
   });
+  const [addUserToFollows, {}] = useMutation(ADD_USER_TO_FOLLWS_TABLE, {
+    variables: {
+      newUser: [{ userid: data?.insertIntousersCollection?.records?.[0]?.id }],
+    },
+  });
 
   const handleAddingUser = async () => {
-    try{
-      await mutateFn()
+    try {
+      await mutateFn();
+      await addUserToFollows();
       router.push("/authenticated?new=yes");
-
-    }catch(e){
+    } catch (e) {
       router.push("/authenticated?new=no");
-
     }
     // await checkUserInDB();
     if (data?.usersCollection?.edges?.length < 1) {

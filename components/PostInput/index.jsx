@@ -12,7 +12,7 @@ const CREATE_NEW_POST = gql`
   }
 `;
 
-const TweetInput = () => {
+const TweetInput = ({ setPostMade }) => {
   const inputRef = useRef(null);
   const [tweetText, setTweetText] = useState("");
   const [addPost, { data, error, loading }] = useMutation(CREATE_NEW_POST);
@@ -39,6 +39,7 @@ const TweetInput = () => {
       inputRef.current.value = "";
       setTweetText("");
     }
+    setPostMade(true)
   };
 
   return (
@@ -86,7 +87,6 @@ const TweetInput = () => {
           onClick={createPost}
         >
           Post!
-          
         </button>
       </div>
     </div>

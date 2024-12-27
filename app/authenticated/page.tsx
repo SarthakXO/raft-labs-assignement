@@ -5,6 +5,7 @@ import TweetInput from "./../../components/PostInput/index";
 import { useEffect,useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import HomeFeed from "@/components/PostsFeed";
+import FollowersSidebar from "@/components/FollowersSideBar";
 
 
 
@@ -29,7 +30,7 @@ mutation Follows{
 
 const page = () => {
   const {user}=useUser()
- 
+  const [postMade,setPostMade]=useState(false)
   const {loading,error,data}=useQuery(GET_USER_UUID,{
     variables:{email:user?.email}
   })
@@ -43,7 +44,7 @@ const page = () => {
     if(data){
       localStorage.setItem('userId',data?.usersCollection?.edges?.[0]?.node?.id)
       try{
-        addUserToFollows()
+        // addUserToFollows()
       }catch(e){
         // console.log(e)
       }
@@ -52,9 +53,12 @@ const page = () => {
   }, [loading]);
 
   return (
-    <div className="p-2 bg-black">
-      <TweetInput />
-      <HomeFeed/>
+    <div className="p-2 bg-black flex-row gap-10 flex">
+      {/* <FollowersSidebar/> */}
+      <div className="w-[100%]">
+      <TweetInput setPostMade={setPostMade} />
+      <HomeFeed postMade={postMade} setPostMade={setPostMade}/>
+      </div>
     </div>
   );
 };

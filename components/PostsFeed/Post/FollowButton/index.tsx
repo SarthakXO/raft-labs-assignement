@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useMutation, gql, useQuery } from "@apollo/client";
+import { useUser } from "@auth0/nextjs-auth0/client";
 interface Props {
   creatorId: String;
+  creatorName:String
 }
 const GET_ALL_FOLLOWED = gql`
   query getFolloweds {
@@ -37,11 +39,11 @@ const REMOVE_FROM_FOLLWED = gql`
   }
 `;
 
-const FollowButton = ({ creatorId }: Props) => {
+const FollowButton = ({ creatorId,creatorName }: Props) => {
   const [myFollwed, setMyFollowed] = useState([]);
   const [following, setFollowing] = useState(false);
   const viewerId = localStorage.getItem("userId");
-
+  const {user}=useUser()
   const { error, loading, data, refetch } = useQuery(GET_ALL_FOLLOWED, {
     variables: { viewer: viewerId },
   });
@@ -76,7 +78,7 @@ const FollowButton = ({ creatorId }: Props) => {
     if (data) {
       setMyFollowed(data?.followsCollection?.edges?.[0]?.node?.followedid);
       if (
-        data?.followsCollection?.edges?.[0]?.node?.followedid.includes(
+        data?.followsCollection?.edges?.[0]?.node?.followedid?.includes(
           creatorId
         )
       ) {
@@ -94,10 +96,11 @@ const FollowButton = ({ creatorId }: Props) => {
           following ? "bg-blue-500" : "bg-gray-700 hover:bg-gray-600"
         } text-white ml-auto`}
         onClick={() =>
-          following ? unFollowCreator() : follolwCreator()
+          
+          following&&viewerId!=creatorId ? unFollowCreator() : follolwCreator()
         }
       >
-        {following ? "Following" : "Follow"}
+        {user?.nickname==creatorName?"You":following ? "Following" : "Follow"}
       </button>
     </div>
   );
