@@ -22,7 +22,7 @@ const GET_USER_DATA = gql`
 `;
 
 const TweetPost = ({ id, userid, text }: Props) => {
-  const [following, setFollowing] = useState(false);
+  
   const { loading, error, data } = useQuery(GET_USER_DATA, {
     variables: { userid: userid },
   });
@@ -31,9 +31,7 @@ const TweetPost = ({ id, userid, text }: Props) => {
   const username = "john_doe";
   const content = text || "Just had the best coffee! ☕️ #coffee #goodvibes";
 
-  const toggleFollow = () => {
-    setFollowing(!following);
-  };
+ 
 
   return (
     <div className="tweet-post bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out max-w-xl w-full mx-auto">
@@ -51,7 +49,7 @@ const TweetPost = ({ id, userid, text }: Props) => {
             </p>
           </div>
         </div>
-        <FollowButton following={following} creatorId={userid}/>
+        <FollowButton  creatorId={userid}/>
       </div>
 
       <div className="content">
